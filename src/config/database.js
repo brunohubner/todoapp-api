@@ -1,12 +1,15 @@
 const mongoose = require("mongoose")
-const dotenv = require("dotenv")
-dotenv.config()
+mongoose.Promise = global.Promise
 
-mongoose.connect(process.env.MONGODB_CONNECTION, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-    .then(() => console.log("[mongodb] Success connection"))
-    .catch(err => console.log("[mongodb] Failed connection\n" + err.message))
+async function connect() {
+    return await mongoose.connect(process.env.MONGODB_CONNECTION, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+}
 
-module.exports = mongoose
+async function close() {
+    return await mongoose.connection.close()
+}
+
+module.exports = { connect, close }

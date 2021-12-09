@@ -1,15 +1,26 @@
-require("./config/database")
-
-const cors = require("./config/cors")
+require("dotenv").config()
+const cors = require("cors")
 const express = require("express")
+const router = require("./api/routes")
+const mongodb = require("./config/database")
 const app = express()
-const host = "localhost"
-const port = 3333
+const port = process.env.PORT || 3333
 
+app.use(cors({
+    origin: "*"
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(cors)
+app.use(router)
 
-require("./api/routes")(app)
+async function start() {
+    await mongodb.connect()
+        .catch(err => console.log("MongoDB connection Failed!\n" + err))
+    app.listen(port, () => console.log(`Server listening on port: ${port}`))
+}
 
-app.listen(port, () => console.log(`[backend] Running in ${host}:${port}`))
+async function stop() {
+    await mongodb.close()
+}
+
+module.exports = { start, stop }
