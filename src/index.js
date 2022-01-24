@@ -1,9 +1,9 @@
 const server = require("./server")
 
 const exitStatusSuccess = 0
-const exitStatusFailure = 1;
+const exitStatusFailure = 1
 
-(async () => {
+;(async () => {
     try {
         await server.start()
         const exitSignals = ["SIGINT", "SIGTERM", "SIGQUIT"]
